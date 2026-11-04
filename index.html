@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة المنار القرآنية لمراجعة التلقين</title>
+    <!-- Font Awesome Icons & Google Arabic Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b1519;
+            --card-bg: rgba(18, 38, 44, 0.85);
+            --primary-emerald: #00e699;
+            --primary-glow: #00ffaa;
+            --accent-gold: #ffc83b;
+            --accent-glow: #ffe17d;
+            --danger-red: #ff4d4d;
+            --text-light: #e0f2fe;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(0, 230, 153, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 200, 59, 0.1), transparent 40%),
+                url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0l40 40-40 40L0 40z' fill='%200e699' fill-opacity='0.03'/%3E%3C/svg%3E");
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* الهيدر والعنوان الضوئي */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 10px;
+        }
+
+        .header-title {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 
+                0 0 5px var(--primary-glow),
+                0 0 10px var(--primary-glow),
+                0 0 20px var(--primary-emerald),
+                0 0 40px var(--primary-emerald);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 8px rgba(255, 200, 59, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* شريط التنقل بين الواجهات */
+        .nav-tabs {
+            display: flex;
+            background: rgba(10, 25, 30, 0.9);
+            padding: 5px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 230, 153, 0.3);
+            box-shadow: 0 0 15px rgba(0, 230, 153, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            padding: 10px 25px;
+            border-radius: 40px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00b377, #008055);
+            color: #fff;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* البطاقات والألواح */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 230, 153, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 200, 59, 0.2);
+            padding-bottom: 10px;
+        }
+
+        /* النماذج المدخلة */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .form-control {
+            background: rgba(5, 15, 20, 0.7);
+            border: 1px solid rgba(0, 230, 153, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+        }
+
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, var(--accent-gold), #d49b00);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(255, 200, 59, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 200, 59, 0.6);
+        }
+
+        /* قائمة الطلبات */
+        .booking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .booking-card {
+            background: rgba(10, 20, 25, 0.6);
+            border-right: 5px solid var(--text-dim);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .booking-card.status-pending { border-right-color: var(--accent-gold); }
+        .booking-card.status-accepted { border-right-color: var(--primary-emerald); }
+        .booking-card.status-completed { border-right-color: #3b82f6; }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .teacher-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .surah-tag {
+            background: rgba(0, 230, 153, 0.15);
+            color: var(--primary-glow);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 230, 153, 0.3);
+        }
+
+        .booking-details {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-pending { background: rgba(255, 200, 59, 0.2); color: var(--accent-gold); }
+        .badge-accepted { background: rgba(0, 230, 153, 0.2); color: var(--primary-glow); }
+        .badge-completed { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+        /* أزرار المشرف */
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-action {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-accept { background: var(--primary-emerald); color: #000; }
+        .btn-complete { background: #3b82f6; color: #fff; }
+        .btn-delete { background: rgba(255, 77, 77, 0.2); color: var(--danger-red); border: 1px solid var(--danger-red); }
+        
+        .btn-action:hover { opacity: 0.85; transform: scale(1.02); }
+
+        /* النافذة المنبثقة للرمز السري */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-gold);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 0 30px rgba(255, 200, 59, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-dim);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر الرئيسي -->
+    <header>
+        <h1 class="header-title">ابتدائية المنار القرآنية - ذكور</h1>
+        <div class="header-subtitle">
+            <i class="fa-solid fa-quran"></i>
+            <span>منصة حجز ومراجعة سور التلقين</span>
+        </div>
+    </header>
+
+    <!-- شريط التنقل بين الواجهات -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchView('teacher')">
+            <i class="fa-solid fa-user-graduate"></i> واجهة الأستاذ
+        </button>
+        <button class="tab-btn" onclick="openAdminModal()">
+            <i class="fa-solid fa-user-shield"></i> مشرف القرآن
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== 1. واجهة الأستاذ ===== -->
+        <div id="teacherView">
+            <!-- نموذج حجز موعد -->
+            <div class="card">
+                <h2 class="card-title"><i class="fa-solid fa-calendar-plus"></i> حجز موعد مراجعة سورة</h2>
+                <form id="bookingForm" onsubmit="handleFormSubmit(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user"></i> اسم الأستاذ:</label>
+                            <input type="text" id="teacherName" class="form-control" placeholder="أدخل اسم الأستاذ الكامل" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-book-open"></i> السورة الملقنة:</label>
+                            <input type="text" id="surahName" class="form-control" placeholder="مثال: سورة النبأ، الجزء 30..." required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-clock"></i> تاريخ ووقت المراجعة:</label>
+                            <input type="datetime-local" id="reviewTime" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn-submit">
+                            <i class="fa-solid fa-paper-plane"></i> إرسال طلب الحجز
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- قائمة الحجوزات الخاصة بالأستاذ -->
+            <div class="card">
+                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> متابعة حالة الحجوزات</h2>
+                <div id="teacherBookingsList" class="booking-list">
+                    <!-- تظهر الطلبات هنا -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 2. واجهة مشرف القرآن ===== -->
+        <div id="adminView" class="hidden">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 class="card-title" style="margin-bottom:0; border:none;"><i class="fa-solid fa-sliders"></i> لوحة إدارة الحجوزات للمشرف</h2>
+                    <button class="btn-action btn-delete" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+                </div>
+                <div id="adminBookingsList" class="booking-list">
+                    <!-- تظهر طلبات الإدارة هنا -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- النافذة المنبثقة لرمز مشرف القرآن -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-lock"></i> الدخول لرمز المشرف</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--text-dim);">يرجى إدخال الرمز السري للانتقال لوادارة الحجوزات</p>
+            <input type="password" id="adminPassword" class="form-control" style="text-align: center; font-size: 1.2rem;" placeholder="****">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-submit" style="flex: 1;" onclick="verifyAdminPassword()">دخول</button>
+                <button class="btn-action btn-delete" style="flex: 1; justify-content: center;" onclick="closeAdminModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // الرمز السري والتخزين المحترفي
+        const SECRET_CODE = "1593";
+        let isAdminLoggedIn = false;
+        let bookings = JSON.parse(localStorage.getItem('manar_bookings')) || [];
+
+        // حفظ الحجوزات في localStorage
+        function saveBookings() {
+            localStorage.setItem('manar_bookings', JSON.stringify(bookings));
+            renderBookings();
+        }
+
+        // إضافة موعد جديد من قبل الأستاذ
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const teacherName = document.getElementById('teacherName').value.trim();
+            const surahName = document.getElementById('surahName').value.trim();
+            const reviewTime = document.getElementById('reviewTime').value;
+
+            if(!teacherName || !surahName || !reviewTime) return;
+
+            const newBooking = {
+                id: Date.now(),
+                teacherName,
+                surahName,
+                reviewTime,
+                status: 'pending', // pending, accepted, completed
+                note: ''
+            };
+
+            bookings.unshift(newBooking);
+            saveBookings();
+            document.getElementById('bookingForm').reset();
+            alert('تم تقديم طلب الحجز بنجاح! بانتظار تأكيد مشرف القرآن.');
+        }
+
+        // التبديل بين الواجهات
+        function switchView(view) {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const teacherView = document.getElementById('teacherView');
+            const adminView = document.getElementById('adminView');
+
+            if(view === 'teacher') {
+                tabBtns[0].classList.add('active');
+                tabBtns[1].classList.remove('active');
+                teacherView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+            } else if(view === 'admin') {
+                tabBtns[1].classList.add('active');
+                tabBtns[0].classList.remove('active');
+                adminView.classList.remove('hidden');
+                teacherView.classList.add('hidden');
+            }
+            renderBookings();
+        }
+
+        // التحقق من رمز مشرف القرآن
+        function openAdminModal() {
+            if(isAdminLoggedIn) {
+                switchView('admin');
+            } else {
+                document.getElementById('passwordModal').style.display = 'flex';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('adminPassword').value;
+            if(pass === SECRET_CODE) {
+                isAdminLoggedIn = true;
+                closeAdminModal();
+                switchView('admin');
+            } else {
+                alert('الرمز السري غير صحيح!');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            switchView('teacher');
+        }
+
+        // تغيير حالة الموعد من قبل المشرف
+        function updateStatus(id, newStatus, noteMsg = '') {
+            bookings = bookings.map(b => {
+                if(b.id === id) {
+                    return { ...b, status: newStatus, note: noteMsg || b.note };
+                }
+                return b;
+            });
+            saveBookings();
+        }
+
+        // حذف الموعد من قبل المشرف
+        function deleteBooking(id) {
+            if(confirm('هل أنت تأكد من رغبتك في حذف هذا الموعد؟')) {
+                bookings = bookings.filter(b => b.id !== id);
+                saveBookings();
+            }
+        }
+
+        // تنسيق التاريخ والوقت
+        function formatDateTime(dtStr) {
+            const dt = new Date(dtStr);
+            return dt.toLocaleString('ar-DZ', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // عرض الحجوزات في القائمتين
+        function renderBookings() {
+            const teacherContainer = document.getElementById('teacherBookingsList');
+            const adminContainer = document.getElementById('adminBookingsList');
+
+            if(bookings.length === 0) {
+                const emptyHTML = `<div class="empty-state"><i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:10px;"></i><br>لا يوجد أي مواعيد مراجعة مسجلة حالياً</div>`;
+                teacherContainer.innerHTML = emptyHTML;
+                adminContainer.innerHTML = emptyHTML;
+                return;
+            }
+
+            // 1. عرض قائمة للأستاذ
+            teacherContainer.innerHTML = bookings.map(b => `
+                <div class="booking-card status-${b.status}">
+                    <div class="booking-header">
+                        <span class="teacher-name"><i class="fa-solid fa-user-tie"></i> ${b.teacherName}</span>
+                        <span class="surah-tag"><i class="fa-solid fa-book-bookmark"></i> ${b.surahName}</span>
+                    </div>
+                    <div class="booking-details">
+                        <span><i class="fa-regular fa-clock"></i> ${formatDateTime(b.reviewTime)}</span>
+                    </div>
+                    <div>
+                        ${b.status === 'pending' ? '<span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> قيد الانتظار لموافقة المشرف</span>' : ''}
+                        ${b.status === 'accepted' ? '<span class="badge badge-accepted"><i class="fa-solid fa-circle-check"></i> تم قبول الحجز من قبل مشرف القرآن</span>' : ''}
+                        ${b.status === 'completed' ? '<span class="badge badge-completed"><i class="fa-solid fa-check-double"></i> قد تم الموعد واللقاء بُرمِج بنجاح</span>' : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            // 2. عرض قائمة المشرف
+            adminContainer.innerHTML = bookings.map(b => `
+                <div class="booking-card status-${b.status}">
+                    <div class="booking-header">
+                        <span class="teacher-name"><i class="fa-solid fa-user-tie"></i> الأستاذ: ${b.teacherName}</span>
+                        <span class="surah-tag"><i class="fa-solid fa-book-bookmark"></i> سورة: ${b.surahName}</span>
+                    </div>
+                    <div class="booking-details">
+                        <span><i class="fa-regular fa-clock"></i> الموعد: ${formatDateTime(b.reviewTime)}</span>
+                        <span>الحالة: 
+                            <strong>
+                                ${b.status === 'pending' ? 'قيد الانتظار' : b.status === 'accepted' ? 'مقبول' : 'تم اللقاء'}
+                            </strong>
+                        </span>
+                    </div>
+
+                    <!-- أزرار التحكم الخاصة بالمشرف -->
+                    <div class="admin-actions">
+                        ${b.status !== 'accepted' && b.status !== 'completed' ? `
+                            <button class="btn-action btn-accept" onclick="updateStatus(${b.id}, 'accepted')">
+                                <i class="fa-solid fa-check"></i> تأكيد الحجز
+                            </button>
+                        ` : ''}
+
+                        ${b.status !== 'completed' ? `
+                            <button class="btn-action btn-complete" onclick="updateStatus(${b.id}, 'completed', 'قد تم الموعد واللقاء برمِج')">
+                                <i class="fa-solid fa-check-double"></i> تم الموعد واللقاء بُرمِج
+                            </button>
+                        ` : ''}
+
+                        <button class="btn-action btn-delete" onclick="deleteBooking(${b.id})">
+                            <i class="fa-solid fa-trash"></i> حذف الموعد
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // تشغيل البداية
+        renderBookings();
+    </script>
+</body>
+</html>
